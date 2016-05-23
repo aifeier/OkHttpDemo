@@ -22,6 +22,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".TwoActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.MAIN" />
+                <data
+                    android:host="meme"
+                    android:mimeType="video/*"
+                    android:scheme="cwf" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

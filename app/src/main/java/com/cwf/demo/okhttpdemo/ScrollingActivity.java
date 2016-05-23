@@ -2,6 +2,8 @@ package com.cwf.demo.okhttpdemo;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -103,8 +105,15 @@ public class ScrollingActivity extends AppCompatActivity implements View.OnClick
                 test_down();
                 break;
             case R.id.test_upload:
+                startTwoActivity();
                 break;
         }
+    }
+
+    private void startTwoActivity() {
+        Intent intent = new Intent();
+        intent.setDataAndType(Uri.parse("cwf://meme"), "video/*");
+        startActivity(intent);
     }
 
     private void test_down() {
