@@ -24,8 +24,11 @@ import com.cwf.libs.okhttplibrary.OkHttpClientManager;
 import com.cwf.libs.okhttplibrary.callback.ResultCallBack;
 import com.cwf.libs.okhttplibrary.callback.SimpleCallBack;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -105,9 +108,30 @@ public class ScrollingActivity extends AppCompatActivity implements View.OnClick
                 test_down();
                 break;
             case R.id.test_upload:
-                startTwoActivity();
+//                startTwoActivity();
+                test_upload();
                 break;
         }
+    }
+
+    private void test_upload() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("wd", "陈万烽");
+        List<File> fileList = new ArrayList<>();
+        fileList.add(new File("/storage/sdcard0/DCIM/Camera/IMG_20160523_153816.jpg"));
+        OkHttpClientManager.getInstance().uploadFile("http://www.baidu.com", params, fileList,
+                new SimpleCallBack(this) {
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        resultTv.setText(e.getMessage());
+                    }
+
+                    @Override
+                    public void onSuccess(String result) {
+                        resultTv.setText(result);
+                    }
+                });
     }
 
     private void startTwoActivity() {

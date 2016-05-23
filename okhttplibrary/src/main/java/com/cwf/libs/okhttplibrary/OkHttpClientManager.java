@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -40,6 +41,7 @@ public class OkHttpClientManager {
     private Handler mDelivery;
     private Gson mGson;
     private final MediaType mMediaType = MediaType.parse("text/html, charset=utf-8");
+    private static final MediaType MEDIA_TYPE_ATTACH = MediaType.parse("application/octet-stream");
 
     private OkHttpClientManager() {
 
@@ -134,11 +136,41 @@ public class OkHttpClientManager {
     }
 
     public void downloadFile(String url, String destFileDir, ResultCallBack resultCallBack) {
-        ;
         Request request = new Request.Builder()
                 .url(url)
                 .build();
         enqueueDownload(resultCallBack, request, destFileDir, url);
+    }
+
+    public void uploadFile(String url, List<File> fileList, ResultCallBack resultCallBack) {
+        Request request = new Request.Builder()
+                .url(url)
+                .post(getRequestBody(new HashMap<String, String>(), fileList)).build();
+        enqueue(resultCallBack, request);
+    }
+
+    public void uploadFile(String url, HashMap<String, String> params, List<File> fileList, ResultCallBack resultCallBack) {
+        Request request = new Request.Builder()
+                .url(url)
+                .post(getRequestBody(params, fileList)).build();
+        enqueue(resultCallBack, request);
+    }
+
+    private RequestBody getRequestBody(HashMap<String, String> params, List<File> fileList) {
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        Iterator iterator = params.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            String value = params.get(key);
+            builder.addFormDataPart(key, value);
+        }
+        for (File file : fileList) {
+            if (!file.exists())
+                continue;
+            builder.addFormDataPart("files", file.getName(),
+                    RequestBody.create(MEDIA_TYPE_ATTACH, file));
+        }
+        return builder.build();
     }
 
     private RequestBody getRequestBody(HashMap<String, String> params) {
